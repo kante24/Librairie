@@ -33,6 +33,13 @@ function connexion()
     }
 }
 
+//date Aujourd'hui
+function dateToday()
+{
+    $date = date('Y-m-d');
+    return $date;
+}
+
 //Fonction connection avec nom utilisateur et mot de passe
 function Login()
 {
@@ -66,6 +73,22 @@ function LogOut()
     header('Location: ../index.php');
 }
 
+//Recherche d'un membre à partir de son login
+function rechercheID($login)
+{
+    $user = "root";
+    $pwd = "";
+    $host = "localhost";
+    $bdd = "Librairie";
+    $link = mysqli_connect($host, $user, $pwd, $bdd) or die("Erreur de connexion au serveur!");
+    $query = "SELECT * FROM Utilisateur Where login='" . $login . "';";
+    $resultat = mysqli_query($link, $query) or die("Erreur dans la requête.");
+    $Utilisateur = $resultat->fetch_assoc();
+
+    $id = $Utilisateur["id"];
+    return $id;
+}
+
 //Inscription nouveau membre
 function Inscription()
 {
@@ -95,6 +118,7 @@ function afficherLivres()
         echo "</br></br></br>";
         foreach ($results as $key =>$value) {
             echo "<center></br></br>";
+            echo "<a href='../Views/Livre.php?idLivre =". $value->idLivre() . "'><img style='width: 200px; height:200px' src='../Images/" . $value->image() . "'/></a> <br/><br/>" ;
             echo "<table border = 1 style=width:500px;text-align:center;>";
             echo "<tr style=background-color:gainsboro> <td>Nom Auteur</td>  <td>Titre</td>  <td>Date Publication</td>  <td>Edition</td></tr>";
             echo "<tr> <td>" . $value->nomAuteur(). "</td>  <td>" . $value->titre() . "</td>  <td>" . $value->anneePublication() . "</td>  <td>". $value->edition() . "</td></tr>";
@@ -121,6 +145,7 @@ function afficherLivre()
     } else {
         foreach ($result as $key =>$value) {
             echo "<center></br></br>";
+            echo "<img style='width: 200px; height:200px' src='../Images/" . $value->image() . "'/> <br/><br/>" ;
             echo "<table border = 1 style=width:500px;text-align:center;>";
             echo "<tr style=background-color:gainsboro> <td>Nom Auteur</td>  <td>Titre</td>  <td>Date Publication</td>  <td>Edition</td></tr>";
             echo "<tr> <td>" . $value->nomAuteur(). "</td>  <td>" . $value->titre() . "</td>  <td>" . $value->anneePublication() . "</td>  <td>". $value->edition() . "</td></tr>";
@@ -192,6 +217,7 @@ function creationPanier()
         $_SESSION['panier']['idLivre'] = array();
         $_SESSION['panier']['titre'] = array();
         $_SESSION['panier']['prixLivre'] = array();
+        $_SESSION['panier']['prixLivre'] = array();
     }
     return true;
 }
@@ -224,24 +250,29 @@ function MontantGlobal()
 //Affichage du contenu du panier
 function afficherPanier()
 {
-    $count=count($_SESSION['panier']['idLivre']);
-    echo("<center>");
-    echo("<table border style='text-align: center;'>");
-    echo("<tr><td colspan=4>Panier d'achat</td></tr>");
-    echo("<tr> <td> Titre du Livre</td>  <td>Prix d'achat</td> </tr>");
+    if (!isset($_SESSION['panier'])) {
+        creationPanier();
+        afficherPanier();
+    } else {
+        $count=count($_SESSION['panier']['idLivre']);
+        echo("<center>");
+        echo("<table border style='text-align: center;width: 500px;'>");
+        echo("<tr><td colspan=4>Panier d'achat</td></tr>");
+        echo("<tr> <td> Titre du Livre</td>  <td>Prix d'achat</td> </tr>");
 
-    for ($i=0; $i <$count ; $i++) {
-        echo "<tr><td>".$_SESSION['panier']['titre'][$i] . " </td><td>".$_SESSION['panier']['prixLivre'][$i]."CAD</td>
+        for ($i=0; $i <$count ; $i++) {
+            echo "<tr><td>".$_SESSION['panier']['titre'][$i] . " </td><td>".$_SESSION['panier']['prixLivre'][$i]."CAD</td>
         <td>
-            <a href=AchatLivre.php?indice=".$i."><input type=submit name=supprimer value=Supprimer /></a> 
+            <a href=AchatLivre.php?indice=".$i."><input type=submit name=supprimer value=Supprimer /></a>
         </td></tr>";
-        $_SESSION['idLivre'] = $_SESSION['panier']['idLivre'][$i];
+            $_SESSION['idLivre'] = $_SESSION['panier']['idLivre'][$i];
+        }
+        echo("<tr><td> Total(Incluant taxes)</td><td colspan=2> " . MontantGlobal() . " CAD </td></tr>");
+        echo("<tr><td colspan=3> <form action ='AchatLivre.php' method='POST'>  <input style='width:100%' type=submit name=valider value='Valider les Livres'/> </form> </td></tr>");
+        echo("<tr><td colspan=3> <a href=Recherche.php> Retour vers Recherche</a></td></tr>");
+        echo("</table>");
+        echo("</center>");
     }
-    echo("<tr><td> Total(Incluant taxes)</td><td> " . MontantGlobal() . "$ </td></tr>");
-    echo("<tr><td colspan=2> <form action ='achat.php' method='POST'>  <input style='width:100%' type=submit name=valider value='Valider'/> </form> </td></tr>");
-    echo("<tr><td colspan=2> <a href=Recherche.php> Retour vers Recherche</a></td></tr>");
-    echo("</table>");
-    echo("</center>");
 }
 
 //Supprimer livre du panier
@@ -250,12 +281,6 @@ function supprimerLivrePanier($idLivre)
     //Si le panier existe
     if (creationPanier()) {
         //Nous allons passer par un panier temporaire
-        // $tmp=array();
-        // $tmp['panier']=array();
-        // $tmp['panier']['idLivre'] = array();
-        // $tmp['panier']['titre'] = array();
-        // $tmp['panier']['prixLivre'] = array();
-
         $_SESSION['panier2']=array();
         $_SESSION['panier2']['idLivre'] = array();
         $_SESSION['panier2']['titre'] = array();
@@ -270,11 +295,82 @@ function supprimerLivrePanier($idLivre)
             }
         }
         //On remplace le panier en session par notre panier temporaire à jour
-            $_SESSION['panier'] =  $_SESSION['panier2'];
+        $_SESSION['panier'] =  $_SESSION['panier2'];
         //On efface notre panier temporaire
         unset($_SESSION['panier2']);
     //echo 'test';
     } else {
         echo "Un problème est survenu veuillez réessayer";
+    }
+}
+
+
+//Proceder au paiment des contenus du panier
+function Payer()
+{
+    $db = connexion();
+    $id = rechercheID($_SESSION["nom"]);
+    $adresse = $_POST["adresse"];
+
+    $count = count($_SESSION['panier']['idLivre']);
+    for ($i = 0; $i < $count; $i++) {
+        $idLivre = $_SESSION['panier']['idLivre'][$i];
+        $prix = doubleval($_SESSION['panier']['prixLivre'][$i]);
+        $date = dateToday();
+        // echo "id = " . $id . " idLivre = " . $idLivre . " prix = " . $prix . " date = " . $date . " Adresse = " . $adresse;
+        $query = $db->prepare("INSERT into Achat (idMembre, idLivre, prix, dateAchat, adresse) VALUES ($id, $idLivre, $prix, '$date', '$adresse') ");
+        $query->execute() or die("<center>Erreur dans la requête</center>");
+    }
+    $montant = MontantGlobal();
+    $d = date("Y-m-d");
+    //fin de l'insertion
+
+    $ncomm = $_SESSION['idLivre'];
+
+
+
+
+    echo "<h1>Le numéro de la commande est:  ".$ncomm."</h1>";
+    echo("<h2>le montant total de votre commande est :  ".$montant."$</h2></br>");
+
+    $_SESSION['montantTotal'] = $montant;
+    
+    unset($_SESSION['panier']);
+    header("Location: ../Views/facture.php");
+}
+
+//Factures des achats effectuées
+function facture($id)
+{
+    $db = connexion();
+    $user = "root";
+    $pwd = "";
+    $host = "localhost";
+    $bdd = "Librairie";
+    $link = mysqli_connect($host, $user, $pwd, $bdd) or die("Erreur de connexion au serveur!");
+    $query = "SELECT * FROM Achat Where idMembre  = ' " . $id . " '; ";
+    $resultat = mysqli_query($link, $query) or die("Erreur dans la requête.");
+    while ($Achat=$resultat->fetch_assoc()) {
+        $idLivre = $Achat["idLivre"];
+        $LivreManager = new LivreManager($db);
+        $result = $LivreManager->afficherLivre($idLivre);
+        if ($result == null) {
+            echo "<center><br/><br/><br/><h4>Aucun livre trouvé</center><h4>";
+        } else {
+            foreach ($result as $key =>$value) {
+                echo "<center></br></br>";
+                echo "<img type='submit' style='width: 200px; height:200px' src='../Images/" . $value->image() . "'/> <br/><br/>" ;
+                echo "<table border = 1 style=width:600px;text-align:center;>";
+                echo "<tr style=background-color:gainsboro> <td>Nom Auteur</td>  <td>Titre</td>  <td>Date Publication</td>  <td>Edition</td>  <td>Date Achat</td>  <td>Prix</td>  <td>Adresse Livraison</td></tr>";
+                echo "<tr> <td>" . $value->nomAuteur(). "</td>  <td>" . $value->titre() . "</td>  <td>" . $value->anneePublication() . "</td>  <td>". $value->edition() . "</td>  <td>". $Achat["dateAchat"] . "</td>  <td>". $Achat["prix"] .  "</td>  <td>". $Achat["adresse"] . "</td></tr>";
+                echo "</table>";
+                echo '<form action="Livre.php" method="POST" style="margin-top: 20px; width:200px">';
+                echo '<input type="hidden" name="idLivre" value="' . $value->idLivre() . '">';
+                echo '<input type="submit" name="Afficher" value="Afficher ce Livre" style="width: 300px;"> ';
+                echo '</form>';
+                echo "<hr/>";
+                echo "</center>";
+            }
+        }
     }
 }

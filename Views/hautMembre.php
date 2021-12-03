@@ -11,40 +11,46 @@
 
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
 
-<div class="container-fluid">
-    <div class="collapse navbar-collapse" id="navbarNav">
+        <div class="container-fluid">
+            <div class="collapse navbar-collapse" id="navbarNav">
 
-        <ul class="navbar-nav">
+                <ul class="navbar-nav">
 
-            <li class="nav-item">
-                <a class="nav-link" target=_blank href="/dashboard/Librairie/Views/AccueilMembre.php">Accueil</a>
-            </li>
-
-
-
-            <li class="nav-item">
-                <a class="nav-link" target=_blank href="/dashboard/Librairie/Views/Recherche.php">Rechercher un Livre</a>
-            </li>
+                    <li class="nav-item">
+                        <a class="nav-link" target=_blank href="/dashboard/Librairie/Views/AccueilMembre.php">Accueil</a>
+                    </li>
 
 
 
-            <li class="nav-item">
-                <a class="nav-link" target=_blank href="/dashboard/Librairie/Controllers/LogOut.php">Déconnection</a>
-            </li>
+                    <li class="nav-item">
+                        <a class="nav-link" target=_blank href="/dashboard/Librairie/Views/Recherche.php">Rechercher un Livre</a>
+                    </li>
 
 
 
-            <li class="nav-item">
-                <a class="nav-link" target=_blank href="PublicationPrivee.php">Publier une annonce Privée</a>
-            </li>
+                    <li class="nav-item">
+                        <a class="nav-link" target=_blank href="/dashboard/Librairie/Views/facture.php">Factures</a>
+                    </li>
 
-        </ul>
 
-    </div>
-</div>
-</nav>
+
+                    <li class="nav-item">
+                        <a class="nav-link" target=_blank href="/dashboard/Librairie/Views/AchatLivre.php">Panier D'Achat</a>
+                    </li>
+
+
+
+                    <li class="nav-item">
+                        <a class="nav-link" target=_blank href="/dashboard/Librairie/Controllers/LogOut.php">Déconnection</a>
+                    </li>
+
+                </ul>
+
+            </div>
+        </div>
+    </nav>
 </body>
 
 </html>

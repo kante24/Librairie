@@ -29,101 +29,61 @@ if (!isset($_SESSION['connexion'])) {
             </h1>
         </Center>
 
+        
+
         <br/><br/>
     </body>
 
     </html>
-<?php
+    <?php
 
+
+
+afficherPanier();
 
 if (isset($_POST['ajoutPanier'])) {
-
     creationPanier();
 
     ajouterLivrePanier($_POST['idLivre'], $_POST['titre'], $_POST['prix']);
 
-    afficherPanier();
-
+    header('Location: AchatLivre.php');
     // echo "id = ". $_POST['idLivre']. " titre = " . $_POST['titre']. " prix = " . $_POST['prix'];
-} else {
-    header('Location: Livre.php');
 }
 
-if(isset($_GET['indice']))
-	
-{
-	$indice =(int)$_GET['indice'];
-	$id = $_SESSION['panier']['idLivre'][$indice];
-	supprimerLivrePanier($id);
+if (isset($_GET['indice'])) {
+    $indice =(int)$_GET['indice'];
+    $id = $_SESSION['panier']['idLivre'][$indice];
+    supprimerLivrePanier($id);
     header('Location: AchatLivre.php');
 }
 
 
-// if (isset($_POST['valider'])) {
-//     $user = "root";
-//     $pwd = "";
-//     $host = "localhost";
-//     $bdd = "projetcommelec";
-//     $link = mysqli_connect($host, $user, $pwd, $bdd) or die("Erreur de connexion au serveur!");
+if (isset($_POST['valider'])) {
+    $count=count($_SESSION['panier']['idLivre']);
+    if (count($_SESSION['panier']['idLivre']) == 0)
+    {
+        echo "<center><h3>Votre panier est vide</h3></center>";
+    }
+    else
+    {
+        echo "<br/><center>
+        <form action='" . $_SERVER["PHP_SELF"]  .  "' method=POST>
+            <table>
+            <tr>
+                <td> Adresse Livraison : </td>
+                <td> <input type=text name=adresse /></td>
+            </tr>
+            <tr>
+            <td colspan=2><br/> <input style=width:300px type=submit name=payer value=PAYER /></td>
+            </tr>
+            </table>
+        </form></center>";
+    }
+}
 
-//     $count = count($_SESSION['panier']['noSerie']);
-//     for ($i = 0; $i < $count; $i++) {
-//         $noSerie = $_SESSION['panier']['noSerie'][$i];
-//         $code = $_SESSION['code'];
-//         $prix = intval($_SESSION['panier']['prixLocation'][$i]);
-//         // $query= " INSERT INTO location (code,noSerie, dateLocation, dateRetour, prixLocation)
-//         $query = " INSERT INTO achat (numSerie,codeClient, prixAchat)
-//             VALUES
-//             ( '$noSerie','$code','$prix' ) ";
-//         $result = mysqli_query($link, $query) or die("<center>Erreur dans la requete</center>");
-//     }
-//     $montant = MontantGlobal();
-//     $d = date("Y-m-d");
-//     //fin de l'insertion
-
-//     $ncomm = $_SESSION['noSerie'];
-
-
-
-
-//     echo "<h1>Le numéro de la commande est:  ".$ncomm."</h1>";
-//     echo("<h2>le montant total de votre commande avant taxes:  ".$montant."$</h2></br>");
-
-//     //considerons les taxes à 15 pourcents du montant
-//     $taxes=$montant*0.15;
-
-//     echo("<h2>Taxes:  ".$taxes."$</h2>");
-
-//     $montantT=$montant+$taxes;
-
-//     echo("<h2>Le montant total apres taxes: ".$montantT."$</h2></br>");
-//     $_SESSION['montantTotal'] = $montantT;
-//     // echo '<center>Achat  Réussi....Merci a bientot.!<a href="Recherche2.php">Retour</a></center>';
-//     echo"
-//     <form action=https://www.sandbox.paypal.com/cgi-bin/webscr method=post>
-//         <input name=amount type=hidden value=" . $montant . " />
-//         <input name=currency_code type=hidden value=CAD />
-//         <input name=shipping type=hidden value=transport />
-//         <input name=tax type=hidden value=" . $taxes . " />
-//         <input name=return type=hidden value=https://localhost/dashboard/projetVente/Recherche2.php />
-//         <input name=cancel_return type=hidden value=https://localhost/dashboard/projetVente/Recherche2.php />
-//         <input name=notify_url type=hidden value=https://localhost/dashboard/projetVente/ipn.php />
-//         <input name=cmd type=hidden value=_xclick />
-//         <input name=business type=hidden value=sb-b7mp36739711@business.example.com />
-//         <input name=item_name type=hidden value=Détail de votre achat />
-//         <input name=no_note type=hidden value=1 />
-//         <input name=lc type=hidden value=FR />
-//         <input name=bn type=hidden value=PP-BuyNowBF />
-//         <input name=custom type=hidden value=" . $ncomm . " />
-//         <input type=hidden name=rm value=2>
-//         <!--/* Bouton pour valider le paiement */-->
-//         <input class=bouton type=submit value=Payer />
-//         </form>";
-    
-//     // unset($_SESSION['panier']);
-//     mysqli_close($link);
-// }
-
+if (isset($_POST['payer'])) {
+    Payer();
+}
 
 
 
