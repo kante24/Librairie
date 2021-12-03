@@ -123,3 +123,21 @@ function supprimerArticle($id_prod){
    else
    echo "Un problème est survenu veuillez contacter l'administrateur du site.";
 }
+
+require("inc/fonctions.inc.php");
+
+if(isset($_GET['indice']))
+	
+{
+	$indice =(int)$_GET['indice'];
+	echo $indice;
+	$id = $_SESSION['panier']['id_produit'][$indice];
+	echo $id;
+	supprimerArticle($id);
+?>
+	<!--header("Location: panier.php" );-->
+	<script>
+	    window.location.replace("panier.php")
+	</script>
+	<?php
+}

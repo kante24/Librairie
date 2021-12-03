@@ -1,5 +1,8 @@
 <?php
 //  $_SERVER['PHP_SELF']
+// <script>
+// 	    window.location.replace("panier.php")
+// 	</script>
 require("../Controllers/UtilisateurManager.class.php");
 require("../Controllers/LivreManager.class.php");
 require("../Models/Utilisateur.class.php");
@@ -195,7 +198,7 @@ function creationPanier()
     
 
 //Ajout livre dans panier
-function ajouterLivrePanier($idLivre,$titre, $prixLivre)
+function ajouterLivrePanier($idLivre, $titre, $prixLivre)
 {
     //Si le panier existe
     if (creationPanier()) {
@@ -228,10 +231,10 @@ function afficherPanier()
     echo("<tr> <td> Titre du Livre</td>  <td>Prix d'achat</td> </tr>");
 
     for ($i=0; $i <$count ; $i++) {
-        echo "<tr><td>".$_SESSION['panier']['titre'][$i] . " </td><td>".$_SESSION['panier']['prixLivre'][$i]."$</td><td>
-      <a href=traitement.php?indice=".$i."><input type=submit name=supprimer value=supprimer /></a> 
-
-      </td></tr>";
+        echo "<tr><td>".$_SESSION['panier']['titre'][$i] . " </td><td>".$_SESSION['panier']['prixLivre'][$i]."CAD</td>
+        <td>
+            <a href=AchatLivre.php?indice=".$i."><input type=submit name=supprimer value=Supprimer /></a> 
+        </td></tr>";
         $_SESSION['idLivre'] = $_SESSION['panier']['idLivre'][$i];
     }
     echo("<tr><td> Total(Incluant taxes)</td><td> " . MontantGlobal() . "$ </td></tr>");
@@ -239,4 +242,39 @@ function afficherPanier()
     echo("<tr><td colspan=2> <a href=Recherche.php> Retour vers Recherche</a></td></tr>");
     echo("</table>");
     echo("</center>");
+}
+
+//Supprimer livre du panier
+function supprimerLivrePanier($idLivre)
+{
+    //Si le panier existe
+    if (creationPanier()) {
+        //Nous allons passer par un panier temporaire
+        // $tmp=array();
+        // $tmp['panier']=array();
+        // $tmp['panier']['idLivre'] = array();
+        // $tmp['panier']['titre'] = array();
+        // $tmp['panier']['prixLivre'] = array();
+
+        $_SESSION['panier2']=array();
+        $_SESSION['panier2']['idLivre'] = array();
+        $_SESSION['panier2']['titre'] = array();
+        $_SESSION['panier2']['prixLivre'] = array();
+ 
+ 
+        for ($i = 0; $i < count($_SESSION['panier']['idLivre']); $i++) {
+            if ($_SESSION['panier']['idLivre'][$i] !== $idLivre) {
+                array_push($_SESSION['panier2']['idLivre'], $_SESSION['panier']['idLivre'][$i]);
+                array_push($_SESSION['panier2']['titre'], $_SESSION['panier']['titre'][$i]);
+                array_push($_SESSION['panier2']['prixLivre'], $_SESSION['panier']['prixLivre'][$i]);
+            }
+        }
+        //On remplace le panier en session par notre panier temporaire à jour
+            $_SESSION['panier'] =  $_SESSION['panier2'];
+        //On efface notre panier temporaire
+        unset($_SESSION['panier2']);
+    //echo 'test';
+    } else {
+        echo "Un problème est survenu veuillez réessayer";
+    }
 }

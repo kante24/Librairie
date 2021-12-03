@@ -35,6 +35,7 @@ if (!isset($_SESSION['connexion'])) {
     </html>
 <?php
 
+
 if (isset($_POST['ajoutPanier'])) {
 
     creationPanier();
@@ -42,10 +43,19 @@ if (isset($_POST['ajoutPanier'])) {
     ajouterLivrePanier($_POST['idLivre'], $_POST['titre'], $_POST['prix']);
 
     afficherPanier();
-    
+
     // echo "id = ". $_POST['idLivre']. " titre = " . $_POST['titre']. " prix = " . $_POST['prix'];
 } else {
     header('Location: Livre.php');
+}
+
+if(isset($_GET['indice']))
+	
+{
+	$indice =(int)$_GET['indice'];
+	$id = $_SESSION['panier']['idLivre'][$indice];
+	supprimerLivrePanier($id);
+    header('Location: AchatLivre.php');
 }
 
 
