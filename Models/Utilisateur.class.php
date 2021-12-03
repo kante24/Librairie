@@ -5,7 +5,6 @@ class Utilisateur
     private $_nom;
     private $_prenom;
     private $_age;
-    private $_titre;
     private $_login;
     private $_password;
 
@@ -28,10 +27,6 @@ class Utilisateur
     {
         return $this->_age;
     }
-    public function titre()
-    {
-        return $this->_titre;
-    }
     public function login()
     {
         return $this->_login;
@@ -43,7 +38,6 @@ class Utilisateur
 
 
     //definition des setters
-
     public function setNom($nom)
     {
         $this->_nom = $nom;
@@ -55,10 +49,6 @@ class Utilisateur
     public function setAge($age)
     {
         $this->_age = $age;
-    }
-    public function setTitre()
-    {
-        $this->_titre = "Autre";
     }
     public function setLogin($login)
     {
