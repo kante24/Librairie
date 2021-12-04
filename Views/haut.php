@@ -35,7 +35,7 @@
 
 
                     <li class="nav-item">
-                        <a class="nav-link" target=_blank href="/dashboard/Librairie/Views/LoginAdmin.php">Administrateur</a>
+                        <a class="nav-link" target=_blank href="/dashboard/Librairie/Views/Admin.php">Administrateur</a>
                     </li>
 
                 </ul>
@@ -43,6 +43,7 @@
             </div>
         </div>
     </nav>
+    
 </body>
 
 </html>

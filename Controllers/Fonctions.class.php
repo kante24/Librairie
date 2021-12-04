@@ -1,5 +1,6 @@
 <?php
 
+//Require
 {
     require("../Controllers/UtilisateurManager.class.php");
     require("../Controllers/LivreManager.class.php");
@@ -8,16 +9,19 @@
     require("../Models/Livre.class.php");
 }
 
-// Fonction pour charger automatiquement les classes utilisées
-// function chargerClasse($classe)
-// {
-//     if (preg_match('../Controllers$/', $classe . ".class.php")) {
-//         require("../Controllers/" . $classe . ".class.php");
-//     } else {
-//         require("../Models/" . $classe . ".class.php");
-//     }
-// }
-// spl_autoload_register('chargerClasse');
+
+{
+    // Fonction pour charger automatiquement les classes utilisées
+    // function chargerClasse($classe)
+    // {
+    //     if (preg_match('../Controllers$/', $classe . ".class.php")) {
+    //         require("../Controllers/" . $classe . ".class.php");
+    //     } else {
+    //         require("../Models/" . $classe . ".class.php");
+    //     }
+    // }
+    // spl_autoload_register('chargerClasse');
+}
 
 
 
@@ -56,6 +60,31 @@ function Login()
                 session_start();
                 $_SESSION['connexion'] = true;
                 $_SESSION['nom'] = $_POST['login'];
+                header("Location:AccueilMembre.php");
+            } else {
+                echo"<center>Veuillez vous enregistrer</center>";
+            }
+        }
+    }
+}
+
+//Fonction connection avec nom utilisateur et mot de passe
+function Admin()
+{
+    if (isset($_POST["Admin"])) {
+        if (empty($_POST['login']) or empty($_POST['password'])) {
+            echo"<center>Veuillez remplir tous les champs SVP</center>";
+        } else {
+            $db = connexion();
+            $Utilisateur=new Utilisateur_simple(array("login"=>$_POST['login'],"password"=> $_POST['password']));
+            $UtilisateurManager = new UtilisateurManager($db);
+            $results=$UtilisateurManager->loginAdmin($Utilisateur);
+    
+            //test de contenu
+            if ($results!== false) {
+                session_start();
+                $_SESSION['connection'] = true;
+                $_SESSION['admin'] = $_POST['login'];
                 header("Location:AccueilMembre.php");
             } else {
                 echo"<center>Veuillez vous enregistrer</center>";
@@ -412,4 +441,75 @@ function Commenter($livre)
     echo '<script>
  	    window.location.replace("../Views/Livre.php?idLivre='. $idLivre .'")
  	</script>';
+}
+
+
+//Afficher infos User dans des text boxs
+function RechercheUser()
+{
+    $db = connexion();
+    $UtilisateurManager = new UtilisateurManager($db);
+    $results=$UtilisateurManager->rechercheUser($_SESSION["nom"]);
+    echo "</br></br></br>";
+    foreach ($results as $key =>$value) {
+        $Form = "";
+        $Form .='<form action="'. $_SERVER["PHP_SELF"] .'" method="POST">';
+        $Form .='<table>';
+        $Form .='<tr>';
+        $Form .='<td style="text-align: right;"><strong>Nom:</strong></td>';
+        $Form .='<td style="text-align: left;">';
+        $Form .='<input type="text" name="nom" value="' . $value->nom(). '" />';
+        $Form .='</td>';
+        $Form .='</tr>';
+        $Form .='<tr>';
+        $Form .='<td style="text-align: right;"><strong>Prenom:</strong></td>';
+        $Form .='<td style="text-align: left;">';
+        $Form .='<input type="text" name="prenom" value="' . $value->prenom(). '" />';
+        $Form .='</td>';
+        $Form .='</tr>';
+        $Form .='<tr>';
+        $Form .='<td style="text-align: right;"><strong>Âge:</strong></td>';
+        $Form .='<td style="text-align: left;">';
+        $Form .='<input type="text" name="age" value="' . $value->age(). '" />';
+        $Form .='</td>';
+        $Form .='</tr>';
+        $Form .='<tr>';
+        $Form .='<td style="text-align: center;">';
+        $Form .='</br><input type="submit" name="modifierUser" value="Modifier"></td>';
+        $Form .='<td style="text-align: center;">';
+        $Form .='</br><input type="submit" name="supUser" value="Suprimer"></td>';
+        $Form .='</tr>';
+        $Form .='</table>';
+        $Form .='</form>';
+        echo $Form;
+        $_SESSION["loginModife"] = $value->login() ;
+    }
+}
+
+
+//Modifier un membre
+function ModifierUser()
+{
+    if (isset($_POST["modifierUser"])) {
+        if (empty($_POST['prenom'])  or empty($_POST['nom']) or empty($_POST['age'])) {
+            echo"<center>Veuillez remplir les champs SVP</center>";
+        } else {
+            $db = connexion();
+            $Utilisateur=new Utilisateur_simple(array("nom"=>$_POST['nom'], "prenom"=>$_POST['prenom'], "age"=>$_POST['age'] ));
+            $UtilisateurManager = new UtilisateurManager($db);
+            $UtilisateurManager->modifierUser($Utilisateur);
+        }
+    }
+}
+
+
+//Supprimer un membre
+function SuprimerUser()
+{
+    if (isset($_POST["supUser"])) {
+        $db = connexion();
+        $UtilisateurManager = new UtilisateurManager($db);
+        $UtilisateurManager->suprimerUser();
+        echo "<center>Suppression réussie</center>";
+    }
 }

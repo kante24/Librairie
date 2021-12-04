@@ -47,6 +47,20 @@ class UtilisateurManager
         }
     }
 
+    public function loginAdmin(Utilisateur_simple $utilisateur)
+    {
+        $login=$utilisateur->login();
+        $password=$utilisateur->password();
+        $req=$this->_db->query("SELECT * FROM Administrateur WHERE admin ='".$login."' AND password='".$password."'");
+        $data=$req->fetch(PDO::FETCH_ASSOC);
+        if ($data != null) {
+            $objet = new Utilisateur($data);
+            return $objet;
+        } else {
+            return false;
+        }
+    }
+
 
 
     // public function loginAdmin(Admin $utilisateur)
@@ -91,7 +105,7 @@ class UtilisateurManager
     {
         $login = $_SESSION["loginModife"];
         $ins=$this->_db;
-        $query = $ins->prepare("DELETE FROM `Utilisateur` WHERE `Utilisateur`.`login` = '$login'");
+        $query = $ins->prepare("DELETE FROM Utilisateur WHERE login = '$login' ");
         $query->execute() or die("<center>Erreur dans la requête</center>");
     }
 

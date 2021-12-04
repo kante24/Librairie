@@ -36,9 +36,15 @@
 
 
 
-                    <li class="nav-item">
-                        <a class="nav-link" target=_blank href="/dashboard/Librairie/Views/AchatLivre.php">Panier D'Achat</a>
-                    </li>
+<li class="nav-item">
+    <a class="nav-link" target=_blank href="/dashboard/Librairie/Views/AchatLivre.php">Panier D'Achat</a>
+</li>
+
+
+
+<li class="nav-item">
+    <a class="nav-link" target=_blank href="/dashboard/Librairie/Views/Compte.php">Votre Compte</a>
+</li>
 
 
 
