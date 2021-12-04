@@ -1,7 +1,7 @@
 <?php
 require("../Controllers/Fonctions.class.php");
 session_start();
-if (!isset($_SESSION['connexion']) or !isset($_POST["idLivre"])) {
+if (!isset($_SESSION['connexion'])) {
     header('Location: Recherche.php');
     exit;
 }
@@ -40,7 +40,20 @@ if (!isset($_SESSION['connexion']) or !isset($_POST["idLivre"])) {
         <?php require("../Views/hautMembre.php"); ?>
 
          <center>
-         <?livreSelectionne() ?>
+         <?php
+          if (isset($_POST["idLivre"]) or isset($_GET["idLivre"])) {
+              if (isset($_POST["idLivre"])) {
+                  $livre = $_POST["idLivre"];
+                  livreSelectionne($livre);
+              } elseif (isset($_GET["idLivre"])) {
+                  $livre = $_GET["idLivre"];
+                  livreSelectionne($livre);
+              }
+          } else {
+              header('Location: Recherche.php');
+          }
+          
+          ?>
          </center>
 
         

@@ -118,7 +118,7 @@ function afficherLivres()
         echo "</br></br></br>";
         foreach ($results as $key =>$value) {
             echo "<center></br></br>";
-            echo "<a href='../Views/Livre.php?idLivre =". $value->idLivre() . "'><img style='width: 200px; height:200px' src='../Images/" . $value->image() . "'/></a> <br/><br/>" ;
+            echo "<a href='../Views/Livre.php?idLivre=". $value->idLivre() . "'><img style='width: 200px; height:200px' src='../Images/" . $value->image() . "'/></a> <br/><br/>" ;
             echo "<table border = 1 style=width:500px;text-align:center;>";
             echo "<tr style=background-color:gainsboro> <td>Nom Auteur</td>  <td>Titre</td>  <td>Date Publication</td>  <td>Edition</td></tr>";
             echo "<tr> <td>" . $value->nomAuteur(). "</td>  <td>" . $value->titre() . "</td>  <td>" . $value->anneePublication() . "</td>  <td>". $value->edition() . "</td></tr>";
@@ -145,7 +145,7 @@ function afficherLivre()
     } else {
         foreach ($result as $key =>$value) {
             echo "<center></br></br>";
-            echo "<img style='width: 200px; height:200px' src='../Images/" . $value->image() . "'/> <br/><br/>" ;
+            echo "<a href='../Views/Livre.php?idLivre=". $value->idLivre() . "'><img style='width: 200px; height:200px' src='../Images/" . $value->image() . "'/></a> <br/><br/>" ;
             echo "<table border = 1 style=width:500px;text-align:center;>";
             echo "<tr style=background-color:gainsboro> <td>Nom Auteur</td>  <td>Titre</td>  <td>Date Publication</td>  <td>Edition</td></tr>";
             echo "<tr> <td>" . $value->nomAuteur(). "</td>  <td>" . $value->titre() . "</td>  <td>" . $value->anneePublication() . "</td>  <td>". $value->edition() . "</td></tr>";
@@ -161,11 +161,11 @@ function afficherLivre()
 }
 
 //Affihcer le livre selectionné
-function livreSelectionne()
+function livreSelectionne($Livre)
 {
     $db = connexion();
     $LivreManager = new LivreManager($db);
-    $result = $LivreManager->afficherLivre($_POST["idLivre"]);
+    $result = $LivreManager->afficherLivre($Livre);
     if ($result == null) {
         echo "<center><br/><br/><br/><h4>Veuillez récommencer</center><h4>";
     } else {
@@ -258,7 +258,7 @@ function afficherPanier()
         echo("<center>");
         echo("<table border style='text-align: center;width: 500px;'>");
         echo("<tr><td colspan=4>Panier d'achat</td></tr>");
-        echo("<tr> <td> Titre du Livre</td>  <td>Prix d'achat</td> </tr>");
+        echo("<tr style=background-color:gainsboro> <td> Titre du Livre</td>  <td colspan=2>Prix d'achat</td> </tr>");
 
         for ($i=0; $i <$count ; $i++) {
             echo "<tr><td>".$_SESSION['panier']['titre'][$i] . " </td><td>".$_SESSION['panier']['prixLivre'][$i]."CAD</td>
@@ -359,7 +359,7 @@ function facture($id)
         } else {
             foreach ($result as $key =>$value) {
                 echo "<center></br></br>";
-                echo "<img type='submit' style='width: 200px; height:200px' src='../Images/" . $value->image() . "'/> <br/><br/>" ;
+                echo "<a href='../Views/Livre.php?idLivre=". $value->idLivre() . "'><img style='width: 200px; height:200px' src='../Images/" . $value->image() . "'/></a> <br/><br/>" ;
                 echo "<table border = 1 style=width:600px;text-align:center;>";
                 echo "<tr style=background-color:gainsboro> <td>Nom Auteur</td>  <td>Titre</td>  <td>Date Publication</td>  <td>Edition</td>  <td>Date Achat</td>  <td>Prix</td>  <td>Adresse Livraison</td></tr>";
                 echo "<tr> <td>" . $value->nomAuteur(). "</td>  <td>" . $value->titre() . "</td>  <td>" . $value->anneePublication() . "</td>  <td>". $value->edition() . "</td>  <td>". $Achat["dateAchat"] . "</td>  <td>". $Achat["prix"] .  "</td>  <td>". $Achat["adresse"] . "</td></tr>";
