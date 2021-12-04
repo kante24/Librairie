@@ -1,13 +1,12 @@
 <?php
-//  $_SERVER['PHP_SELF']
-// <script>
-// 	    window.location.replace("panier.php")
-// 	</script>
-require("../Controllers/UtilisateurManager.class.php");
-require("../Controllers/LivreManager.class.php");
-require("../Models/Utilisateur.class.php");
-require("../Models/Utilisateur_simple.class.php");
-require("../Models/Livre.class.php");
+
+{
+    require("../Controllers/UtilisateurManager.class.php");
+    require("../Controllers/LivreManager.class.php");
+    require("../Models/Utilisateur.class.php");
+    require("../Models/Utilisateur_simple.class.php");
+    require("../Models/Livre.class.php");
+}
 
 // Fonction pour charger automatiquement les classes utilisées
 // function chargerClasse($classe)
@@ -179,7 +178,7 @@ function livreSelectionne($Livre)
                 </h1>
                 </center>";
             $form = "";
-            $form ='<div style="width: 1000px; margin-top: 100px;">
+            $form ='<div style="width: 1000px; margin-top: 100px; margin-bottom: 50px ;">
 
                 <div style="width: 500px;float: left;">
                     <img style="width: 300px; height:500px" src = "../Images/' . $value->image() . '" alt="' . $value->image() . '" /> 
@@ -199,10 +198,10 @@ function livreSelectionne($Livre)
                     <input type="hidden" name="titre" value="' . $value->titre() . '">
                     <input type="hidden" name="prix" value="' . $value->prix() . '">
                     <input type="submit" style="width: 400px"  name="ajoutPanier" value="Ajouter au Panier"/>
-                    </form>
+                    </form><br/><br/>
                 </div>
 
-            </div>';
+            </div><br/><br/>';
             echo $form;
         }
     }
@@ -343,14 +342,9 @@ function Payer()
 function facture($id)
 {
     $db = connexion();
-    $user = "root";
-    $pwd = "";
-    $host = "localhost";
-    $bdd = "Librairie";
-    $link = mysqli_connect($host, $user, $pwd, $bdd) or die("Erreur de connexion au serveur!");
-    $query = "SELECT * FROM Achat Where idMembre  = ' " . $id . " '; ";
-    $resultat = mysqli_query($link, $query) or die("Erreur dans la requête.");
-    while ($Achat=$resultat->fetch_assoc()) {
+    $query = $db->prepare("SELECT * FROM Achat Where idMembre  = ' " . $id . " '; ");
+    $query->execute() or die("<center>Erreur dans la requête</center>");
+    while ($Achat=$query->fetch(PDO::FETCH_ASSOC)) {
         $idLivre = $Achat["idLivre"];
         $LivreManager = new LivreManager($db);
         $result = $LivreManager->afficherLivre($idLivre);
@@ -373,4 +367,49 @@ function facture($id)
             }
         }
     }
+}
+
+//Affiche les commentaires sur le livre en question
+function Commentaires($livre)
+{
+    $db = connexion();
+    $query = $db->prepare("SELECT * FROM Commentaire Where idLivre ='" . $livre . "' ORDER BY date DESC ");
+    $query->execute() or die("<center>Erreur dans la requête</center>");
+    echo '<div style="margin-top: 50px; width:1000px">
+    <table border="1" style="text-align: center;">
+    <tr>
+    <th>
+        Nom Membre
+    </th>
+    <th>
+        Date Commentaire
+    </th>
+    <th>
+        Commentaire
+    </th>
+    </tr>';
+    while ($Commentaire = $query->fetch(PDO::FETCH_ASSOC)) {
+        echo '
+        <tr>
+            <td>'. $Commentaire["loginMembre"] . '</td>
+            <td>'. $Commentaire["date"] . '</td>
+            <td>'. $Commentaire["commentaire"] . '</td>
+        </tr>';
+    }
+    echo '</table></div>';
+}
+
+//Ajouter un commentaire
+function Commenter($livre)
+{
+    $idLivre = $livre;
+    $commentaire = $_POST["commentaire"];
+    $loginMembre = $_SESSION["nom"];
+    $date = dateToday();
+    $ins=connexion();
+    $query = $ins->prepare("INSERT into Commentaire (loginMembre, idLivre, date, commentaire) VALUES ('$loginMembre', '$idLivre', '$date', '$commentaire')");
+    $query->execute() or die("<center>Erreur dans la requête</center>");
+    echo '<script>
+ 	    window.location.replace("../Views/Livre.php?idLivre='. $idLivre .'")
+ 	</script>';
 }

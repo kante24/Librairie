@@ -47,6 +47,8 @@ class UtilisateurManager
         }
     }
 
+
+
     // public function loginAdmin(Admin $utilisateur)
     // {
     //     $login=$utilisateur->login();
