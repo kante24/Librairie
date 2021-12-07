@@ -84,10 +84,10 @@ function Admin()
             if ($results!== false) {
                 session_start();
                 $_SESSION['connection'] = true;
-                $_SESSION['admin'] = $_POST['login'];
-                header("Location:AccueilMembre.php");
+                $_SESSION['nom'] = $_POST['login'];
+                header("Location:AccueilAdmin.php");
             } else {
-                echo"<center>Veuillez vous enregistrer</center>";
+                echo"<center>Vous n'êtes pas un admin</center>";
             }
         }
     }
@@ -445,11 +445,11 @@ function Commenter($livre)
 
 
 //Afficher infos User dans des text boxs
-function RechercheUser()
+function RechercheUser($login)
 {
     $db = connexion();
     $UtilisateurManager = new UtilisateurManager($db);
-    $results=$UtilisateurManager->rechercheUser($_SESSION["nom"]);
+    $results=$UtilisateurManager->rechercheUser($login);
     echo "</br></br></br>";
     foreach ($results as $key =>$value) {
         $Form = "";
@@ -471,6 +471,7 @@ function RechercheUser()
         $Form .='<td style="text-align: right;"><strong>Âge:</strong></td>';
         $Form .='<td style="text-align: left;">';
         $Form .='<input type="text" name="age" value="' . $value->age(). '" />';
+        $Form .='<input type="hidden" name="loginModife" value="' . $value->login(). '" />';
         $Form .='</td>';
         $Form .='</tr>';
         $Form .='<tr>';
@@ -503,6 +504,22 @@ function ModifierUser()
 }
 
 
+//Modifier un membre par admin
+function ModifierUserByAdmin($login)
+{
+    if (isset($_POST["modifierUser"])) {
+        if (empty($_POST['prenom'])  or empty($_POST['nom']) or empty($_POST['age'])) {
+            echo"<center>Veuillez remplir les champs SVP</center>";
+        } else {
+            $db = connexion();
+            $Utilisateur=new Utilisateur_simple(array("nom"=>$_POST['nom'], "prenom"=>$_POST['prenom'], "age"=>$_POST['age'] ));
+            $UtilisateurManager = new UtilisateurManager($db);
+            $UtilisateurManager->modifierUserByAdmin($Utilisateur,$login);
+        }
+    }
+}
+
+
 //Supprimer un membre
 function SuprimerUser()
 {
@@ -510,6 +527,18 @@ function SuprimerUser()
         $db = connexion();
         $UtilisateurManager = new UtilisateurManager($db);
         $UtilisateurManager->suprimerUser();
+        echo "<center>Suppression réussie</center>";
+    }
+}
+
+
+//Supprimer un membre par admin
+function SuprimerUserByAdmin($login)
+{
+    if (isset($_POST["supUser"])) {
+        $db = connexion();
+        $UtilisateurManager = new UtilisateurManager($db);
+        $UtilisateurManager->suprimerUserByAdmin($login);
         echo "<center>Suppression réussie</center>";
     }
 }

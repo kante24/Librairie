@@ -62,22 +62,6 @@ class UtilisateurManager
     }
 
 
-
-    // public function loginAdmin(Admin $utilisateur)
-    // {
-    //     $login=$utilisateur->login();
-    //     $password=$utilisateur->password();
-    //     $req=$this->_db->query("SELECT * FROM Administrateur WHERE login='".$login."' AND password='".$password."'");
-    //     $data=$req->fetch(PDO::FETCH_ASSOC);
-    //     if ($data != null) {
-    //         $objet = new Utilisateur($data);
-    //         return $objet;
-    //     } else {
-    //         return false;
-    //     }
-    // }
-
-
     public function rechercheUser($login)
     {
         $req=$this->_db->query("SELECT * FROM Utilisateur WHERE login = '$login' ");
@@ -101,6 +85,18 @@ class UtilisateurManager
     }
 
 
+    public function modifierUserByAdmin(Utilisateur_simple $utilisateur, $login)
+    {
+        $nom = $utilisateur->nom();
+        $prenom =$utilisateur->prenom() ;
+        $age = $utilisateur->age();
+        $log = $login;
+        $ins=$this->_db;
+        $query = $ins->prepare("UPDATE `Utilisateur` SET `nom`='$nom', `prenom`='$prenom', `age`='$age' WHERE `Utilisateur`.`login` = '$log'");
+        $query->execute() or die("<center>Erreur dans la requête</center>");
+    }
+
+
     public function suprimerUser()
     {
         $login = $_SESSION["loginModife"];
@@ -109,13 +105,12 @@ class UtilisateurManager
         $query->execute() or die("<center>Erreur dans la requête</center>");
     }
 
-    public function afficherDestinataires()
+
+    public function suprimerUserByAdmin($login)
     {
-        $req=$this->_db->query("SELECT * FROM Utilisateur");
-        $utilisateur= array();
-        while ($data=$req->fetch(PDO::FETCH_ASSOC)) {
-            $utilisateur[] = new Utilisateur_simple($data);
-        }
-        return $utilisateur;
+        $log = $login;
+        $ins=$this->_db;
+        $query = $ins->prepare("DELETE FROM Utilisateur WHERE login = '$log' ");
+        $query->execute() or die("<center>Erreur dans la requête</center>");
     }
 }

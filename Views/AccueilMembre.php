@@ -28,7 +28,7 @@ if (!isset($_SESSION['connexion'])) {
         <?php require("../Views/hautMembre.php"); ?>
 
         <Center>
-            <h1>
+            <h1 style="background-color: white;">
                 <U>
             Accueil <?=$_SESSION['nom']?>
         </U>

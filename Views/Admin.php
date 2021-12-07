@@ -22,7 +22,7 @@ require("../Controllers/Fonctions.class.php");
             Accueil
         </U>
             </h1>
-            <form action="Login.php" method="POST" style="margin-top: 100px;">
+            <form action="Admin.php" method="POST" style="margin-top: 100px;">
                 <table>
                     <tr>
                         <td>
@@ -51,5 +51,6 @@ require("../Controllers/Fonctions.class.php");
 
     </html>
     <?php
-// Admin();
+Admin();
+
 ?>

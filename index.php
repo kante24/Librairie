@@ -17,7 +17,7 @@
 <body">
     <?php require("Views/haut.php"); ?>
     <Center>
-        <h1 style="color: red;">
+        <h1 style="background-color: white;">
             <U>
             Accueil
         </U>

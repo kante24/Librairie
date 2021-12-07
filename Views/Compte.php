@@ -34,7 +34,8 @@ if (!isset($_SESSION['connexion'])) {
 </html>
 
 <?php
-RechercheUser();
+RechercheUser($_SESSION["nom"]);
+
 if(isset($_POST["supUser"]) )
 {
     SuprimerUser();

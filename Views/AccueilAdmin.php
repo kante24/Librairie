@@ -19,12 +19,12 @@ if (!isset($_SESSION['connection'])) {
     </head>
 
     <body>
-        <?php require("../Views/hautMembre.php"); ?>
+        <?php require("../Views/hautAdmin.php"); ?>
 
         <Center>
             <h1>
                 <U>
-            Admin <?=$_SESSION['admin']?>
+            Administrateur__<?=$_SESSION['nom']?>
         </U>
             </h1>
         </Center>
